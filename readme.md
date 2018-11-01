@@ -8,6 +8,90 @@ A darker, more contrasty, Slack theme.
 
 # Installing into Slack
 
+## Simple installation ( Mac version ):
+_This one is more simple because the manual approach requires you to repeat all the steps everytime Slack is updated._
+
+1. Open your terminal of choice and create a folder and enter it.
+```
+mkdir ~/.slack-theme && cd ~/.slack-theme
+```
+
+2. Create 2 files in this folder:
+
+**copy-slack-theme.sh :**
+```
+#!/bin/bash
+
+sudo cat ~/.slack/slack-dark-theme.js >> /Applications/Slack.app/Contents/Resources/app.asar.unpacked/src/static/ssb-interop.js
+
+echo 'Restart/reload slack to see the changes'
+```
+
+**slack-dark-theme.js :**
+```js
+
+// First make sure the wrapper app is loaded
+document.addEventListener("DOMContentLoaded", function() {
+
+  // Then get its webviews
+  let webviews = document.querySelectorAll(".TeamView webview");
+
+  // Fetch our CSS in parallel ahead of time
+  const cssPath = 'https://raw.githubusercontent.com/Jensderond/slack-black-theme/master/custom.css';
+  let cssPromise = fetch(cssPath).then(response => response.text());
+
+  let customCustomCSS = `
+  :root {
+    /* Modify these to change your theme colors: */
+    --primary: #61AFEF;
+    --text: #ABB2BF;
+    --background: #282C34;
+    --background-elevated: #3B4048;
+  }
+  `
+
+  // Insert a style tag into the wrapper view
+  cssPromise.then(css => {
+     let s = document.createElement('style');
+     s.type = 'text/css';
+     s.innerHTML = css + customCustomCSS;
+     document.head.appendChild(s);
+  });
+
+  // Wait for each webview to load
+  webviews.forEach(webview => {
+     webview.addEventListener('ipc-message', message => {
+        if (message.channel == 'didFinishLoading')
+           // Finally add the CSS into the webview
+           cssPromise.then(css => {
+              let script = `
+                    let s = document.createElement('style');
+                    s.type = 'text/css';
+                    s.id = 'slack-custom-css';
+                    s.innerHTML = \`${css + customCustomCSS}\`;
+                    document.head.appendChild(s);
+                    `
+              webview.executeJavaScript(script);
+           })
+     });
+  });
+});
+```
+
+3. Add this alias to easily install the theme after updates. 
+```
+alias slackdark='sudo sh ~/.slack-theme/copy-slack-theme.sh'
+```
+
+4. Source the file where you've added the alias. e.g. ~/.bashrc ~/.zshrc 
+```
+source ~/.zshrc
+```
+
+5. You can now simply execute `slackdark` as a command in your terminal.
+
+## Manual installation:
+
 Find your Slack's application directory.
 
 * Windows: `%homepath%\AppData\Local\slack\`
