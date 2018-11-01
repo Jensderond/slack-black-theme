@@ -22,7 +22,7 @@ mkdir ~/.slack-theme && cd ~/.slack-theme
 ```
 #!/bin/bash
 
-sudo cat ~/.slack/slack-dark-theme.js >> /Applications/Slack.app/Contents/Resources/app.asar.unpacked/src/static/ssb-interop.js
+sudo cat ~/.slack-theme/slack-dark-theme.js >> /Applications/Slack.app/Contents/Resources/app.asar.unpacked/src/static/ssb-interop.js
 
 echo 'Restart/reload slack to see the changes'
 ```
