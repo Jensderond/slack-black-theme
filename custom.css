@@ -1126,7 +1126,7 @@ ts-jumper ts-jumper-container {
 .c-search_autocomplete__suggestion_content {
     color: var(--text-bright);
 }
-.c-team__display-name, .c-unified_member__display-name, .c-usergroup__handle, c-unified_member__title, c-unified_member__title--large {
+.c-team__display-name, .c-unified_member__display-name, .c-usergroup__handle, .c-unified_member__title, .c-unified_member__title--large {
     color: var(--text);
 }
 
